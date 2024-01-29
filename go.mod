@@ -3,6 +3,7 @@ module github.com/Shakezidin
 go 1.21.5
 
 require (
+	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/segmentio/kafka-go v0.4.47
 	github.com/spf13/viper v1.18.2
 	golang.org/x/sync v0.6.0

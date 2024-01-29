@@ -1,42 +1,37 @@
 package service
 
 import (
-	"encoding/json"
 	"log"
+	"strconv"
+	"strings"
 
-	"github.com/segmentio/kafka-go"
+	cnfg "github.com/Shakezidin/pkg/config"
 	"gopkg.in/gomail.v2"
 )
 
-type EmailMessage struct {
-	Email   string
-	Subject string
-	Content string
+type Messages struct {
+	Username string
+	Email    string
+	Amount   int
 }
 
-func SendEmailToUser(message kafka.Message, senderMail, passwordAdmin string) error {
-	sender := senderMail
-	password := passwordAdmin
-
-	var email EmailMessage
-	err := json.Unmarshal(message.Value, &email)
-	if err != nil {
-		log.Println("unable to unmarshal byte value")
-		return err
-	}
+func SendConfirmationEmail(cnfg *cnfg.Conf, bookingDetails Messages) error {
+	sender := cnfg.EMAIL
+	password := cnfg.PASSWORD
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", sender)
-	m.SetHeader("To", email.Email)
-	m.SetHeader("Subject", email.Subject)
-	m.SetBody("text/plain", email.Content)
+	recipient := strings.Trim(bookingDetails.Email, `"`)
+	m.SetHeader("To", recipient)
+	m.SetHeader("Subject", "Booking Confirmation")
+	m.SetBody("text/plain", "Your booking is confirmed. Amount: "+strconv.Itoa(bookingDetails.Amount))
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, sender, password)
 	if err := d.DialAndSend(m); err != nil {
 		log.Printf("Could not send mail %v", err)
 		return err
 	} else {
-		log.Printf("Email Sent Succesfully")
+		log.Printf("Email Sent Successfully")
 	}
 	return nil
 }
