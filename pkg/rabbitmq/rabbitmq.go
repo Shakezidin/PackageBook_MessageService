@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	cnfg "github.com/Shakezidin/pkg/config"
@@ -60,6 +61,7 @@ func ConsumeConfirmationMessages(cnfg *cnfg.Conf) {
 			log.Printf("Error decoding message body: %v", err)
 			continue
 		}
+		fmt.Println(bookingDetails)
 
 		// Send confirmation email using booking details
 		err = msgg.SendConfirmationEmail(cnfg, bookingDetails)
