@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -18,6 +17,7 @@ type Messages struct {
 	Subject  string
 }
 
+
 func SendConfirmationEmail(cnfg *cnfg.Conf, bookingDetails Messages) error {
 	sender := cnfg.EMAIL
 	password := cnfg.PASSWORD
@@ -25,7 +25,6 @@ func SendConfirmationEmail(cnfg *cnfg.Conf, bookingDetails Messages) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", sender)
 	recipient := strings.TrimSpace(strings.Trim(bookingDetails.Email, `"`))
-	fmt.Println("heylooo", recipient)
 	m.SetHeader("To", recipient)
 	m.SetHeader("Subject", bookingDetails.Subject)
 	m.SetBody("text/plain", bookingDetails.Messages+strconv.Itoa(bookingDetails.Amount))

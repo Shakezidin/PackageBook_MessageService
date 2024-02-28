@@ -2,6 +2,8 @@ package config
 
 import (
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type Conf struct {
@@ -11,6 +13,7 @@ type Conf struct {
 }
 
 func Configuration() (*Conf, error) {
+	godotenv.Load("../../.env")
 	conf := &Conf{
 		EMAIL:    os.Getenv("EMAIL"),
 		PASSWORD: os.Getenv("PASSWORD"),
