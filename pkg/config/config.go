@@ -1,30 +1,24 @@
 package config
 
 import (
-	"fmt"
+	"os"
 
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
 
 type Conf struct {
-	EMAIL    string `mapstructure:"EMAIL"`
-	PASSWORD string `mapstructure:"PASSWORD"`
-	PORT     string `mapstructure:"PORT"`
+	EMAIL    string
+	PASSWORD string
+	PORT     string
 }
 
 func Configuration() (*Conf, error) {
-	var conf Conf
-	viper.SetConfigFile("../../.env")
-	err := viper.ReadInConfig()
-	if err != nil {
-		fmt.Println("error", err)
-		return &Conf{}, err
+	godotenv.Load("../../.env")
+	conf := &Conf{
+		EMAIL:    os.Getenv("EMAIL"),
+		PASSWORD: os.Getenv("PASSWORD"),
+		PORT:     os.Getenv("PORT"),
 	}
 
-	err = viper.Unmarshal(&conf)
-	if err != nil {
-		return &Conf{}, err
-	}
-
-	return &conf, nil
+	return conf, nil
 }

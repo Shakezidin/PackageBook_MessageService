@@ -13,7 +13,10 @@ type Messages struct {
 	Username string
 	Email    string
 	Amount   int
+	Messages string
+	Subject  string
 }
+
 
 func SendConfirmationEmail(cnfg *cnfg.Conf, bookingDetails Messages) error {
 	sender := cnfg.EMAIL
@@ -21,10 +24,10 @@ func SendConfirmationEmail(cnfg *cnfg.Conf, bookingDetails Messages) error {
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", sender)
-	recipient := strings.Trim(bookingDetails.Email, `"`)
+	recipient := strings.TrimSpace(strings.Trim(bookingDetails.Email, `"`))
 	m.SetHeader("To", recipient)
-	m.SetHeader("Subject", "Booking Confirmation")
-	m.SetBody("text/plain", "Your booking is confirmed. Amount: "+strconv.Itoa(bookingDetails.Amount))
+	m.SetHeader("Subject", bookingDetails.Subject)
+	m.SetBody("text/plain", bookingDetails.Messages+strconv.Itoa(bookingDetails.Amount))
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, sender, password)
 	if err := d.DialAndSend(m); err != nil {
